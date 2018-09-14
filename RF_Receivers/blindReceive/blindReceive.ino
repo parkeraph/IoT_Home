@@ -16,13 +16,17 @@ RF24 radio(7, 8);
 
 //pins
 const int MOTOR_OPEN_PIN = 1;
-const int MOTOR_CLOSED_PIN = 2;
+const int MOTOR_CLOSE_PIN = 2;
 const int SWITCH_OPEN_PIN = 3;
 const int SWITCH_CLOSE_PIN = 4;
 
 //comparitor const
 const int BLIND_OPEN_STATE = 60; //t=60 when fully open
 const int BLIND_CLOSED_STATE = 0; //t=0 when fully closed
+
+int T = 0; //blinds must manually be set closed when restarting software
+int dT = 0;
+int lastdT;
 
 void setup() {
   pinMode(MOTOR_OPEN_PIN, OUTPUT);
@@ -41,12 +45,13 @@ void setup() {
   radio.powerUp();
   radio.startListening();
   
-  int T = 0; //blinds must manually be set closed when restarting software
+  
+
 }
 
 //alter blind position based on 
 int changeBlindPosition(int dT, int T){
-    
+    ///dostuff
 }
 
 //check and parse any incoming RF data
@@ -62,25 +67,22 @@ int checkRF(int T){
     if(message[1] != ""){
         Serial.println(message);
         if(message[1] = "T"){
-          if(digitalRead(led_pin) == LOW){
-            digitalWrite(led_pin, HIGH);  
-          }else{
-            digitalWrite(led_pin, LOW);  
-          }
+          //dostuff....
         }
     }
 }
+}
 
-int
+
 
 void loop(void){
-  RF_dT = checkRF(T);
+ int RF_dT = checkRF(T);
 
   if(RF_dT != 0){
-    dT = RF_dt;  
-  }else if(digitalRead(BUTTON_CLOSE_PIN) == HIGH){
+    dT = RF_dT;  
+  }else if(digitalRead(SWITCH_CLOSE_PIN) == HIGH){
     dT = 1;
-  }else if(digitalRead(BUTTON_OPEN_PIN) == HIGH){
+  }else if(digitalRead(SWITCH_OPEN_PIN) == HIGH){
     dT = -1;  
   }else{
     dT = 0;
