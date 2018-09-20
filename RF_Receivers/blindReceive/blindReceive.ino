@@ -51,11 +51,23 @@ void setup() {
 
 //alter blind position based on 
 int changeBlindPosition(int dT, int T){
-    ///dostuff
+    int desired_T = T - dT;
+    
+    if(desired_T < T){
+      digitalWrite(MOTOR_CLOSE_PIN, HIGH);
+      sleep(dT * 1000);
+      digitalWrite(MOTOR_CLOSE_PIN, LOW);  
+    }else if(desired_T > T){
+       digitalWrite(MOTOR_OPEN_PIN, HIGH);
+       sleep(dT * 1000);
+       digitalWrite(MOTOR_OPEN_PIN, LOW);
+    }
+    
+    return T + dT    
 }
 
 //check and parse any incoming RF data
-int checkRF(int T){
+int checkRF(){
   char message[] = "";
   
   if(radio.available()){
@@ -66,8 +78,8 @@ int checkRF(int T){
     
     if(message[1] != ""){
         Serial.println(message);
-        if(message[1] = "T"){
-          //dostuff....
+        if(!isnan(message[1].toInt())){
+          
         }
     }
 }
