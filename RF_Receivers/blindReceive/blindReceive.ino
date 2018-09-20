@@ -55,15 +55,15 @@ int changeBlindPosition(int dT, int T){
     
     if(desired_T < T){
       digitalWrite(MOTOR_CLOSE_PIN, HIGH);
-      sleep(dT * 1000);
+      delay(dT * 1000);
       digitalWrite(MOTOR_CLOSE_PIN, LOW);  
     }else if(desired_T > T){
        digitalWrite(MOTOR_OPEN_PIN, HIGH);
-       sleep(dT * 1000);
+       delay(dT * 1000);
        digitalWrite(MOTOR_OPEN_PIN, LOW);
     }
     
-    return T + dT    
+    return T + dT;    
 }
 
 //check and parse any incoming RF data
@@ -78,7 +78,7 @@ int checkRF(){
     
     if(message[1] != ""){
         Serial.println(message);
-        if(!isnan(message[1].toInt())){
+        if(!isnan(message[1])){
           
         }
     }
@@ -88,7 +88,7 @@ int checkRF(){
 
 
 void loop(void){
- int RF_dT = checkRF(T);
+ int RF_dT = checkRF();
 
   if(RF_dT != 0){
     dT = RF_dT;  
