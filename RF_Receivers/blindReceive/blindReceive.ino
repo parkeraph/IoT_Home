@@ -12,13 +12,13 @@ COMMON PARAMS:
       1 = open
       2 = close
 **/
-RF24 radio(7, 8);
+RF24 radio(2, 6);
 
 //pins
-const int MOTOR_OPEN_PIN = 1;
-const int MOTOR_CLOSE_PIN = 2;
-const int SWITCH_OPEN_PIN = 3;
-const int SWITCH_CLOSE_PIN = 4;
+const int MOTOR_OPEN_PIN = 0;
+const int MOTOR_CLOSE_PIN = 1;
+const int SWITCH_OPEN_PIN = 8;
+const int SWITCH_CLOSE_PIN = 7;
 
 //comparitor const
 const int BLIND_OPEN_STATE = 60; //t=60 when fully open
@@ -50,25 +50,25 @@ void setup() {
 }
 
 //alter blind position based on 
-int changeBlindPosition(int dT, int T){
-    int desired_T = T - dT;
+int changeBlindPosition(int thisDt, int thisT){
+    int desired_T = thisT - thisDt;
     
-    if(desired_T < T){
+    if(desired_T < thisT){
       digitalWrite(MOTOR_CLOSE_PIN, HIGH);
-      delay(dT * 1000);
+      delay(abs(thisDt) * 1000);
       digitalWrite(MOTOR_CLOSE_PIN, LOW);  
-    }else if(desired_T > T){
+    }else if(desired_T > thisT){
        digitalWrite(MOTOR_OPEN_PIN, HIGH);
-       delay(dT * 1000);
+       delay(abs(thisDt) * 1000);
        digitalWrite(MOTOR_OPEN_PIN, LOW);
     }
     
-    return T + dT;    
+    return thisT + thisDt;    
 }
 
 //check and parse any incoming RF data
 int checkRF(){
-  char message[] = "";
+  int message[1];
   
   if(radio.available()){
 
@@ -77,25 +77,23 @@ int checkRF(){
     }
     
     if(message[1] != ""){
-        Serial.println(message);
-        if(!isnan(message[1])){
-          
-        }
+       return (int)message[0];
     }
-}
+  }
+  return 0;
 }
 
 
 
 void loop(void){
- int RF_dT = checkRF();
+  int RF_dT = 0;//checkRF();
 
   if(RF_dT != 0){
     dT = RF_dT;  
   }else if(digitalRead(SWITCH_CLOSE_PIN) == HIGH){
-    dT = 1;
+    dT = -10;
   }else if(digitalRead(SWITCH_OPEN_PIN) == HIGH){
-    dT = -1;  
+    dT = 10;  
   }else{
     dT = 0;
   }
